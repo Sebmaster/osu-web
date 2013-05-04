@@ -36,6 +36,12 @@ Beatmap.prototype._init = function () {
 			}
 			comboText = 1;
 		}
+		if (i > 0 && this.hitObjects[i - 1].x === this.hitObjects[i].x && this.hitObjects[i - 1].y === this.hitObjects[i].y &&
+			(this.hitObjects[i].type === 1 || this.hitObjects[i].type === 4 || this.hitObjects[i].type === 5)) {
+			this.hitObjects[i].x += 10;
+			this.hitObjects[i].y += 10;
+		}
+
 		this.hitObjects[i].combo = combo;
 		this.hitObjects[i].comboText = comboText++;
 	}
