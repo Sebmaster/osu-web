@@ -2,14 +2,12 @@
 	this.playArea = jQuery(playArea);
 }
 
-OSU.prototype.bindEvents = function () {
+OSU.prototype.bindEvents = function (newSong) {
 	var that = this;
 
-	this.playArea.on('dragover dragend', function () {
+	jQuery('body').on('dragover dragend', function () {
 		return false;
-	});
-
-	this.playArea.on('drop paste', function (e) {
+	}).on('drop paste', function (e) {
 		var files = e.originalEvent.dataTransfer.files;
 		if (!files || !files.length) return;
 
@@ -17,16 +15,13 @@ OSU.prototype.bindEvents = function () {
 			var osz = new OSZFile(files[i]);
 			osz.verify(function (err, osu) {
 				if (err) {
-					console.log(err);
+					newSong(err);
 					return;
 				}
 
 				osz.copyToLocalStorage(function (err) {
-					that.getSavedSongs();
-					console.log(err);
-					console.log('extraction finished');
+					newSong(err);
 				});
-				console.log(osu);
 			});
 		}
 
