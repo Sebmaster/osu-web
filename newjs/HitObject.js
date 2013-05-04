@@ -30,6 +30,7 @@ HitObject.prototype.draw = function (currentTime) {
 			if (!this.clicked && currentTime >= this.time - 1500 && currentTime <= this.time) {
 				//this.drawApproach();
 				this._drawObject(currentTime);
+				this._drawApproach(currentTime);
 			}
 			break;
 	}
@@ -66,3 +67,24 @@ HitObject.prototype._drawObject = function (currentTime) {
 			break;
 	}
 };
+
+HitObject.prototype._drawApproach = function (currentTime) {
+	var alpha = (1 - (this.time - currentTime) / 1500);
+	var rgba = this.getColor(alpha);
+	var ctx = this.beatmap.context;
+	var circleSize = 20;
+
+	if (!this.clic) {
+		var taux = 1 - alpha;
+
+		//reset
+		ctx.save();
+		ctx.lineWidth = 3;
+
+		ctx.beginPath();
+		ctx.strokeStyle = rgba;
+		ctx.arc(this.x, this.y, (1 + 3 * taux) * circleSize, 0, Math.PI * 2, 0);
+		ctx.stroke();
+		ctx.restore();
+	}
+}
