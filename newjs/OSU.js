@@ -1,5 +1,6 @@
 ﻿function OSU(playArea, songArea) {
 	this.playArea = jQuery(playArea);
+	this.context = this.playArea[0].getContext('2d');
 }
 
 OSU.prototype.bindEvents = function (newSong) {
@@ -77,7 +78,9 @@ OSU.prototype.playSong = function (song, cb) {
 	if (typeof song === 'string') {
 		Utils.requestFileSystem(0, function (err, fs) {
 			if (err) {
-				cb(err);
+				if (cb) {
+					cb(err);
+				}
 				return;
 			}
 
@@ -88,5 +91,19 @@ OSU.prototype.playSong = function (song, cb) {
 		return;
 	}
 
-	console.log(song);
+	song.file(function (file) {
+		var reader = new FileReader();
+
+		reader.onloadend = function (e) {
+			var path = song.fullPath.substring(0, song.fullPath.lastIndexOf('/') + 1);
+			var bm = new Beatmap(new OSUFile(reader.result), path);
+			bm.start();
+
+			if (cb) {
+				cb(null);
+			}
+		};
+
+		reader.readAsText(file);
+	}, cb);
 };
