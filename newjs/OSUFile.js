@@ -17,12 +17,12 @@ OSUFile.prototype._parse = function (src) {
 
 		if (categoryMatch) {
 			category = categoryMatch[1];
-			if (category === 'Events' || category === 'TimingPoints') {
+			if (category === 'Events' || category === 'TimingPoints' || category === 'HitObjects') {
 				this.data[category] = [];
 			} else {
 				this.data[category] = {};
 			}
-		} else if (category === 'Events' || category === 'TimingPoints') {
+		} else if (category === 'Events' || category === 'TimingPoints' || category === 'HitObjects') {
 			if (lines[i][0] === '_' || lines[i][0] === ' ') {
 				this.data[category][this.data[category].length - 1] += ',' + lines[i].substr(1);
 			} else {
