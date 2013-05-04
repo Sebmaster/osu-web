@@ -29,7 +29,7 @@ OSUFile.prototype._parse = function (src) {
 				this.data[category].push(lines[i].split(','));
 			}
 		} else {
-			var lineMatch = lines[i].match(/^(.*?):\s*(.*)$/);
+			var lineMatch = lines[i].match(/^(\S*?)\s*:\s*(.*)$/);
 			this.data[category][lineMatch[1]] = lineMatch[2];
 		}
 	}
