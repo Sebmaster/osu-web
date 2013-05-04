@@ -96,7 +96,7 @@ OSU.prototype.playSong = function (song, cb) {
 
 		reader.onloadend = function (e) {
 			var path = song.fullPath.substring(0, song.fullPath.lastIndexOf('/') + 1);
-			var bm = new Beatmap(new OSUFile(reader.result), path);
+			var bm = new Beatmap(that.context, new OSUFile(reader.result), path);
 			bm.start();
 
 			if (cb) {
