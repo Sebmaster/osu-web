@@ -65,4 +65,4 @@ Beatmap.prototype.draw = function () {
 Beatmap.prototype.stop = function () {
 	this.audio.pause();
 	window.cancelAnimationFrame(this.animationFrame);
-}
+};
