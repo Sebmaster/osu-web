@@ -18,10 +18,11 @@ OSZFile.prototype.verify = function (cb) {
 				osuFile[0].getData(new zip.TextWriter(), function (text) {
 					reader.close();
 
-					if (text.indexOf('osu file format v12') === 0) {
+					var matches = text.match(/^\s*osu file format v(\d+?)\r?\n/);
+					if (matches && parseInt(matches[1], 10) <= 12) {
 						cb(null, new OSUFile(text));
 					} else {
-						cb(new Error('osu file format v12 expected!'));
+						cb(new Error('osu file format <= v12 expected!'));
 					}
 				});
 			} else {
