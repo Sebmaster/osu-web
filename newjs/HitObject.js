@@ -13,7 +13,7 @@
 
 HitObject.prototype.getColor = function (alpha) {
 	if (typeof alpha !== 'number') {
-		alpha = 0;
+		alpha = 1;
 	}
 
 	return 'rgba(' + this.beatmap.color[0] + ',' + this.beatmap.color[1] + ',' + this.beatmap.color[2] + ',' + alpha + ')';
