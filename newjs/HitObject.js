@@ -85,4 +85,4 @@ HitObject.prototype._drawApproach = function (currentTime) {
 		ctx.arc(this.x, this.y, (1 + 3 * taux) * circleSize, 0, Math.PI * 2, 0);
 		ctx.stroke();
 	}
-}
+};
