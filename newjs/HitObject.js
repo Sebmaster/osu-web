@@ -47,6 +47,8 @@ HitObject.prototype._drawObject = function (currentTime) {
 		case 1:
 		case 4:
 		case 5:
+			ctx.lineWidth = 1;
+
 			ctx.beginPath();
 			ctx.fillStyle = "rgba(200,200,200," + alpha + ")";
 			ctx.arc(this.x, this.y, circleSize, 0, Math.PI * 2, 0);
@@ -77,14 +79,11 @@ HitObject.prototype._drawApproach = function (currentTime) {
 	if (!this.clic) {
 		var taux = 1 - alpha;
 
-		//reset
-		ctx.save();
 		ctx.lineWidth = 3;
 
 		ctx.beginPath();
 		ctx.strokeStyle = rgba;
 		ctx.arc(this.x, this.y, (1 + 3 * taux) * circleSize, 0, Math.PI * 2, 0);
 		ctx.stroke();
-		ctx.restore();
 	}
 }
