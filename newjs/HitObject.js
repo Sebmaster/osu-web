@@ -43,7 +43,15 @@ HitObject.prototype._drawObject = function (currentTime) {
 		case 1:
 		case 4:
 		case 5:
-			//ctx.globalCompositeOperation = "destination-over";
+			ctx.beginPath();
+			ctx.fillStyle = "rgba(200,200,200," + alpha + ")";
+			ctx.arc(this.x, this.y, circleSize, 0, Math.PI * 2, 0);
+			ctx.fill();
+
+			ctx.beginPath();
+			ctx.fillStyle = rgba;
+			ctx.arc(this.x, this.y, circleSize * 0.95, 0, Math.PI * 2, 0);
+			ctx.fill();
 
 			ctx.textAlign = "center";
 			ctx.textBaseline = "middle";
@@ -52,22 +60,6 @@ HitObject.prototype._drawObject = function (currentTime) {
 			ctx.fillStyle = "rgba(255,255,255," + alpha + ")";
 
 			ctx.fillText("1", this.x, this.y);
-
-			//reset
-			ctx.lineWidth = 1;
-			ctx.lineCap = "butt";
-
-			//inner
-			ctx.beginPath();
-			ctx.fillStyle = rgba;
-			ctx.arc(this.x, this.y, circleSize * 0.95, 0, Math.PI * 2, 0);
-			ctx.fill();
-
-			//outter
-			ctx.beginPath();
-			ctx.fillStyle = "rgba(200,200,200," + alpha + ")";
-			ctx.arc(this.x, this.y, circleSize, 0, Math.PI * 2, 0);
-			ctx.fill();
 			break;
 	}
 };
