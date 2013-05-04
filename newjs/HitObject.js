@@ -19,20 +19,20 @@ HitObject.prototype.getColor = function (alpha) {
 	return 'rgba(' + this.beatmap.color[0] + ',' + this.beatmap.color[1] + ',' + this.beatmap.color[2] + ',' + alpha + ')';
 };
 
-HitObject.prototype.draw = function (ctx, currentTime) {
+HitObject.prototype.draw = function (currentTime) {
 	switch (this.type) {
 		case 1:
 		case 4:
 		case 5:
 			if (!this.clicked && currentTime >= this.time - 1500 && currentTime <= this.time) {
 				//this.drawApproach();
-				this._drawObject();
+				this._drawObject(currentTime);
 			}
 			break;
 	}
 };
 
-HitObject.prototype._drawObject = function (ctx, currentTime) {
+HitObject.prototype._drawObject = function (currentTime) {
 	var alpha = (1 - (this.time - currentTime) / 1500);
 	var rgba = this.getColor(alpha);
 	var rgb = this.getColor();

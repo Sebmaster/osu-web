@@ -41,7 +41,7 @@ Beatmap.prototype.draw = function () {
 	var curr = this.audio.currentTime * 1000;
 	this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height);
 	for (var i = 0; i < this.hitObjects.length; ++i) {
-		this.hitObjects[i].draw(this.context, curr);
+		this.hitObjects[i].draw(curr);
 	}
 };
 
