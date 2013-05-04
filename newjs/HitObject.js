@@ -8,6 +8,9 @@
 	this.type = parseInt(data[3], 10);
 	this.sound = parseInt(data[4], 10);
 
+	this.combo = 0;
+	this.comboText = 1;
+
 	this.clicked = false;
 }
 
@@ -15,8 +18,8 @@ HitObject.prototype.getColor = function (alpha) {
 	if (typeof alpha !== 'number') {
 		alpha = 1;
 	}
-
-	return 'rgba(' + this.beatmap.color[0][0] + ',' + this.beatmap.color[0][1] + ',' + this.beatmap.color[0][2] + ',' + alpha + ')';
+	var col = this.combo % this.beatmap.color.length;
+	return 'rgba(' + this.beatmap.color[col][0] + ',' + this.beatmap.color[col][1] + ',' + this.beatmap.color[col][2] + ',' + alpha + ')';
 };
 
 HitObject.prototype.draw = function (currentTime) {
@@ -59,7 +62,7 @@ HitObject.prototype._drawObject = function (currentTime) {
 			ctx.font = circleSize + "px Arial";
 			ctx.fillStyle = "rgba(255,255,255," + alpha + ")";
 
-			ctx.fillText("1", this.x, this.y);
+			ctx.fillText(this.comboText, this.x, this.y);
 			break;
 	}
 };

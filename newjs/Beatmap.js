@@ -26,8 +26,18 @@ Beatmap.prototype._init = function () {
 	this.audio.src = 'filesystem:' + document.location.origin + '/persistent' + this.path + this.osu.data.General.AudioFilename;
 
 	var ho = this.osu.data.HitObjects;
+	var combo = 0;
+	var comboText = 1;
 	for (i = 0; i < ho.length; ++i) {
 		this.hitObjects[i] = new HitObject(this, ho[i]);
+		if (this.hitObjects[i].type === 4 || this.hitObjects[i].type === 5 || this.hitObjects[i].type === 6) {
+			if (i !== 0) {
+				++combo;
+			}
+			comboText = 1;
+		}
+		this.hitObjects[i].combo = combo;
+		this.hitObjects[i].comboText = comboText++;
 	}
 };
 
