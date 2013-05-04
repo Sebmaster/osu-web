@@ -23,7 +23,7 @@ OSUFile.prototype._parse = function (src) {
 				this.data[category] = {};
 			}
 		} else if (category === 'Events' || category === 'TimingPoints' || category === 'HitObjects') {
-			if (lines[i][0] === '_' || lines[i][0] === ' ') {
+			if (category === 'Events' && (lines[i][0] === '_' || lines[i][0] === ' ')) {
 				this.data[category][this.data[category].length - 1] += ',' + lines[i].substr(1);
 			} else {
 				this.data[category].push(lines[i].split(','));
