@@ -25,7 +25,7 @@
 
 window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
 window.storageInfo = window.storageInfo || window.webkitStorageInfo;
-zip.workerScriptsPath = "/vendor/zip.js/";
+zip.workerScriptsPath = "vendor/zip.js/";
 
 jQuery(function () {
 	function refreshSongs(entries) {
