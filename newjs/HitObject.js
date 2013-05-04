@@ -28,7 +28,6 @@ HitObject.prototype.draw = function (currentTime) {
 		case 4:
 		case 5:
 			if (!this.clicked && currentTime >= this.time - 1500 && currentTime <= this.time) {
-				//this.drawApproach();
 				this._drawObject(currentTime);
 				this._drawApproach(currentTime);
 			}
