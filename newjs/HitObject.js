@@ -16,7 +16,7 @@ HitObject.prototype.getColor = function (alpha) {
 		alpha = 1;
 	}
 
-	return 'rgba(' + this.beatmap.color[0] + ',' + this.beatmap.color[1] + ',' + this.beatmap.color[2] + ',' + alpha + ')';
+	return 'rgba(' + this.beatmap.color[0][0] + ',' + this.beatmap.color[0][1] + ',' + this.beatmap.color[0][2] + ',' + alpha + ')';
 };
 
 HitObject.prototype.draw = function (currentTime) {

@@ -19,7 +19,8 @@
 Beatmap.prototype._init = function () {
 	var i = 0;
 	for (var key in this.osu.data.Colours) {
-		this.color[i++] = this.osu.data.Colours[key];
+		var cols = this.osu.data.Colours[key].split(',');
+		this.color[i++] = [parseInt(cols[0], 10), parseInt(cols[1], 10), parseInt(cols[2], 10)];
 	}
 
 	this.audio.src = 'filesystem:' + document.location.origin + '/persistent' + this.path + this.osu.data.General.AudioFilename;
