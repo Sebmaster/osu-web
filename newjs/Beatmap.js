@@ -12,18 +12,26 @@
 	this.path = path;
 	this.audio = document.createElement('audio');
 	this.hitObjects = [];
-
-	this._init();
 }
 
-Beatmap.prototype._init = function () {
+Beatmap.prototype.init = function (cb) {
 	var i = 0;
 	for (var key in this.osu.data.Colours) {
 		var cols = this.osu.data.Colours[key].split(',');
 		this.color[i++] = [parseInt(cols[0], 10), parseInt(cols[1], 10), parseInt(cols[2], 10)];
 	}
 
-	this.audio.src = 'filesystem:' + document.location.origin + '/persistent' + this.path + this.osu.data.General.AudioFilename;
+	Utils.requestFileSystem(0, function (err, fs) {
+		if (err) {
+			cb(err);
+			return;
+		}
+
+		fs.root.getFile(this.path + this.osu.data.General.AudioFilename, {exclusive: true}, function(fileEntry) {
+			this.audio.src = fileEntry.toURL();
+			cb(null);
+		}, cb);
+	});
 
 	var ho = this.osu.data.HitObjects;
 	var combo = 0;
