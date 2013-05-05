@@ -23,18 +23,6 @@ Beatmap.prototype.init = function (cb) {
 		this.color[i++] = [parseInt(cols[0], 10), parseInt(cols[1], 10), parseInt(cols[2], 10)];
 	}
 
-	Utils.requestFileSystem(0, function (err, fs) {
-		if (err) {
-			cb(err);
-			return;
-		}
-
-		fs.root.getFile(that.path + that.osu.data.General.AudioFilename, { exclusive: true }, function (fileEntry) {
-			that.audio.src = fileEntry.toURL();
-			cb(null);
-		}, cb);
-	});
-
 	var ho = this.osu.data.HitObjects;
 	var combo = 0;
 	var comboText = 1;
@@ -55,6 +43,18 @@ Beatmap.prototype.init = function (cb) {
 		this.hitObjects[i].combo = combo;
 		this.hitObjects[i].comboText = comboText++;
 	}
+
+	Utils.requestFileSystem(0, function (err, fs) {
+		if (err) {
+			cb(err);
+			return;
+		}
+
+		fs.root.getFile(that.path + that.osu.data.General.AudioFilename, { exclusive: true }, function (fileEntry) {
+			that.audio.src = fileEntry.toURL();
+			cb(null);
+		}, cb);
+	});
 };
 
 Beatmap.prototype.start = function () {
