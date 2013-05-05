@@ -65,10 +65,15 @@ Beatmap.prototype.start = function () {
 Beatmap.prototype.draw = function () {
 	this.animationFrame = window.requestAnimationFrame(this.draw.bind(this));
 
+	var width = this.context.canvas.width;
+	var height = this.context.canvas.height;
+	var ratioX = width / 640;
+	var ratioY = height / 480;
 	var curr = this.audio.currentTime * 1000;
-	this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height);
+
+	this.context.clearRect(0, 0, width, height);
 	for (var i = 0; i < this.hitObjects.length; ++i) {
-		this.hitObjects[i].draw(this.context, curr);
+		this.hitObjects[i].draw(this.context, ratioX, ratioY, curr);
 	}
 };
 

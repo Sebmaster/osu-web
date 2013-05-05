@@ -22,20 +22,20 @@ HitObject.prototype.getColor = function (alpha) {
 	return 'rgba(' + this.beatmap.color[col][0] + ',' + this.beatmap.color[col][1] + ',' + this.beatmap.color[col][2] + ',' + alpha + ')';
 };
 
-HitObject.prototype.draw = function (ctx, currentTime) {
+HitObject.prototype.draw = function (ctx, ratioX, ratioY, currentTime) {
 	switch (this.type) {
 		case 1:
 		case 4:
 		case 5:
 			if (!this.clicked && currentTime >= this.time - 1500 && currentTime <= this.time) {
-				this._drawObject(ctx, currentTime);
-				this._drawApproach(ctx, currentTime);
+				this._drawObject(ctx, ratioX, ratioY, currentTime);
+				this._drawApproach(ctx, ratioX, ratioY, currentTime);
 			}
 			break;
 	}
 };
 
-HitObject.prototype._drawObject = function (ctx, currentTime) {
+HitObject.prototype._drawObject = function (ctx, ratioX, ratioY, currentTime) {
 	var alpha = (1 - (this.time - currentTime) / 1500);
 	var rgba = this.getColor(alpha);
 	var rgb = this.getColor();
@@ -49,12 +49,12 @@ HitObject.prototype._drawObject = function (ctx, currentTime) {
 
 			ctx.beginPath();
 			ctx.fillStyle = "rgba(200,200,200," + alpha + ")";
-			ctx.arc(this.x, this.y, circleSize, 0, Math.PI * 2, 0);
+			ctx.arc(this.x * ratioX, this.y * ratioY, circleSize, 0, Math.PI * 2, 0);
 			ctx.fill();
 
 			ctx.beginPath();
 			ctx.fillStyle = rgba;
-			ctx.arc(this.x, this.y, circleSize * 0.95, 0, Math.PI * 2, 0);
+			ctx.arc(this.x * ratioX, this.y * ratioY, circleSize * 0.95, 0, Math.PI * 2, 0);
 			ctx.fill();
 
 			ctx.textAlign = "center";
@@ -63,12 +63,12 @@ HitObject.prototype._drawObject = function (ctx, currentTime) {
 			ctx.font = circleSize + "px Arial";
 			ctx.fillStyle = "rgba(255,255,255," + alpha + ")";
 
-			ctx.fillText(this.comboText, this.x, this.y);
+			ctx.fillText(this.comboText, this.x * ratioX, this.y * ratioY);
 			break;
 	}
 };
 
-HitObject.prototype._drawApproach = function (ctx, currentTime) {
+HitObject.prototype._drawApproach = function (ctx, ratioX, ratioY, currentTime) {
 	var alpha = (1 - (this.time - currentTime) / 1500);
 	var rgba = this.getColor(alpha);
 	var circleSize = 20;
@@ -80,7 +80,7 @@ HitObject.prototype._drawApproach = function (ctx, currentTime) {
 
 		ctx.beginPath();
 		ctx.strokeStyle = rgba;
-		ctx.arc(this.x, this.y, (1 + 3 * taux) * circleSize, 0, Math.PI * 2, 0);
+		ctx.arc(this.x * ratioX, this.y * ratioY, (1 + 3 * taux) * circleSize, 0, Math.PI * 2, 0);
 		ctx.stroke();
 	}
 };
