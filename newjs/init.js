@@ -55,9 +55,13 @@ jQuery(function () {
 			}
 		});
 	}
+	var osu = new OSU('#osu');
+	osu.bindEvents(function () {
+		refreshSongs();
+	});
 
 	jQuery(window).on('resize', function () {
-		var canvas = jQuery('#osu');
+		var canvas = jQuery(osu.context.canvas);
 		var cvWidth = canvas.width();
 		var cvHeight = canvas.height();
 
@@ -65,10 +69,6 @@ jQuery(function () {
 	});
 
 	jQuery(window).trigger('resize');
-	var osu = new OSU('#osu');
-	osu.bindEvents(function () {
-		refreshSongs();
-	});
 
 	refreshSongs();
 });
