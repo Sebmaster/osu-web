@@ -11,7 +11,7 @@
 	this.osu = osuFile;
 	this.path = path;
 	this.audio = document.createElement('audio');
-	this.hitObjects = [];
+	this.hitObjects = new Array(this.osu.data.HitObjects.length);
 }
 
 Beatmap.prototype.init = function (cb) {
