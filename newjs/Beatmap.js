@@ -12,6 +12,7 @@
 	this.path = path;
 	this.audio = document.createElement('audio');
 	this.hitObjects = new Array(this.osu.data.HitObjects.length);
+	this.storyboard = new Storyboard(this.path, this.osu);
 }
 
 Beatmap.prototype.init = function (cb) {
@@ -72,6 +73,7 @@ Beatmap.prototype.draw = function () {
 	var curr = this.audio.currentTime * 1000;
 
 	this.context.clearRect(0, 0, width, height);
+	this.storyboard.draw(this.context, ratioX, ratioY, curr);
 	for (var i = 0; i < this.hitObjects.length; ++i) {
 		this.hitObjects[i].draw(this.context, ratioX, ratioY, curr);
 	}
