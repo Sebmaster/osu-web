@@ -15,6 +15,8 @@
 }
 
 Beatmap.prototype.init = function (cb) {
+	var that = this;
+
 	var i = 0;
 	for (var key in this.osu.data.Colours) {
 		var cols = this.osu.data.Colours[key].split(',');
@@ -27,8 +29,8 @@ Beatmap.prototype.init = function (cb) {
 			return;
 		}
 
-		fs.root.getFile(this.path + this.osu.data.General.AudioFilename, {exclusive: true}, function(fileEntry) {
-			this.audio.src = fileEntry.toURL();
+		fs.root.getFile(that.path + that.osu.data.General.AudioFilename, { exclusive: true }, function (fileEntry) {
+			that.audio.src = fileEntry.toURL();
 			cb(null);
 		}, cb);
 	});
