@@ -15,7 +15,7 @@ OSZFile.prototype.verify = function (cb) {
 			});
 
 			if (osuFile.length > 0) {
-				osuFile[0].getData(new zip.TextWriter(), function (text) {
+				osuFile[0].getData(new zip.TextWriter('CP1251'), function (text) {
 					reader.close();
 
 					var matches = text.match(/^\s*osu file format v(\d+?)\r?\n/);
