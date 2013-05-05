@@ -61,11 +61,18 @@ jQuery(function () {
 	});
 
 	jQuery(window).on('resize', function () {
+		var disp = osu.playArea.css('display');
+		if (disp === 'none') {
+			jQuery('#osu').css('display', '');
+		}
 		var canvas = jQuery(osu.context.canvas);
 		var cvWidth = canvas.width();
 		var cvHeight = canvas.height();
 
 		canvas.prop({ width: cvWidth, height: cvHeight });
+		if (disp === 'none') {
+			osu.playArea.css('display', 'none');
+		}
 	});
 
 	jQuery(window).trigger('resize');
