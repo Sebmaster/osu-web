@@ -60,6 +60,7 @@ jQuery(function () {
 		jQuery('#osu').prop({ width: window.innerWidth, height: window.innerHeight });
 	});
 
+	jQuery(window).trigger('resize');
 	var osu = new OSU('#osu');
 	osu.bindEvents(function () {
 		refreshSongs();
