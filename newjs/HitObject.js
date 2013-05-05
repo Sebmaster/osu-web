@@ -22,25 +22,24 @@ HitObject.prototype.getColor = function (alpha) {
 	return 'rgba(' + this.beatmap.color[col][0] + ',' + this.beatmap.color[col][1] + ',' + this.beatmap.color[col][2] + ',' + alpha + ')';
 };
 
-HitObject.prototype.draw = function (currentTime) {
+HitObject.prototype.draw = function (ctx, currentTime) {
 	switch (this.type) {
 		case 1:
 		case 4:
 		case 5:
 			if (!this.clicked && currentTime >= this.time - 1500 && currentTime <= this.time) {
-				this._drawObject(currentTime);
-				this._drawApproach(currentTime);
+				this._drawObject(ctx, currentTime);
+				this._drawApproach(ctx, currentTime);
 			}
 			break;
 	}
 };
 
-HitObject.prototype._drawObject = function (currentTime) {
+HitObject.prototype._drawObject = function (ctx, currentTime) {
 	var alpha = (1 - (this.time - currentTime) / 1500);
 	var rgba = this.getColor(alpha);
 	var rgb = this.getColor();
 	var circleSize = 20;
-	var ctx = this.beatmap.context;
 
 	switch (this.type) {
 		case 1:
@@ -69,10 +68,9 @@ HitObject.prototype._drawObject = function (currentTime) {
 	}
 };
 
-HitObject.prototype._drawApproach = function (currentTime) {
+HitObject.prototype._drawApproach = function (ctx, currentTime) {
 	var alpha = (1 - (this.time - currentTime) / 1500);
 	var rgba = this.getColor(alpha);
-	var ctx = this.beatmap.context;
 	var circleSize = 20;
 
 	if (!this.clic) {
