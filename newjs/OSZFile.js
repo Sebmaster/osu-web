@@ -29,8 +29,8 @@ OSZFile.prototype.verify = function (cb) {
 				cb(new Error('Can\'t find osu file in the archive!'));
 			}
 		});
-	}, function () {
-		cb(new Error('Can\'t open archive!'));
+	}, function (err) {
+		cb(err);
 	});
 };
 
