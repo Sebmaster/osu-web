@@ -57,7 +57,11 @@ jQuery(function () {
 	}
 
 	jQuery(window).on('resize', function () {
-		jQuery('#osu').prop({ width: window.innerWidth, height: window.innerHeight });
+		var canvas = jQuery('#osu');
+		var cvWidth = canvas.width();
+		var cvHeight = canvas.height();
+
+		canvas.prop({ width: cvWidth, height: cvHeight });
 	});
 
 	jQuery(window).trigger('resize');
