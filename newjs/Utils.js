@@ -1,12 +1,26 @@
 ﻿Utils = {
+	fs: null,
+
 	requestFileSystem: function (size, cb) {
-		window.storageInfo.queryUsageAndQuota(window.storageInfo.PERSISTENT, function (usage, free) {
-			window.storageInfo.requestQuota(window.storageInfo.PERSISTENT, usage + size, function () {
-				window.requestFileSystem(window.PERSISTENT, usage + size, function (fs) {
-					cb(null, fs);
+		if (window.storageInfo) {
+			window.storageInfo.queryUsageAndQuota(window.storageInfo.PERSISTENT, function (usage, free) {
+				window.storageInfo.requestQuota(window.storageInfo.PERSISTENT, usage + size, function () {
+					window.requestFileSystem(window.PERSISTENT, usage + size, function (fs) {
+						cb(null, fs);
+					}, cb);
 				}, cb);
 			}, cb);
-		}, cb);
+		} else {
+			if (Utils.fs !== null) {
+				cb(null, Utils.fs);
+				return;
+			}
+
+			window.requestFileSystem(window.TEMPORARY, size, function (fs) {
+				Utils.fs = fs;
+				cb(null, fs);
+			}, cb);
+		}
 	},
 
 	createFilePath: function (dir, subdirs, cb) {
@@ -14,7 +28,7 @@
 			subdirs = subdirs.slice(1);
 		}
 		dir.getDirectory(subdirs[0], { create: true }, function (dirEntry) {
-			if (subdirs.length) {
+			if (subdirs.length > 1) {
 				Utils.createFilePath(dirEntry, subdirs.slice(1), cb);
 			} else {
 				cb(null, dirEntry);
