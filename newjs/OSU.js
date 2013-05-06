@@ -111,6 +111,6 @@ OSU.prototype.playSong = function (song, cb) {
 			});
 		};
 
-		reader.readAsText(file);
+		reader.readAsText(file, 'CP1251');
 	}, cb);
 };
