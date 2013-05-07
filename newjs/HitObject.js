@@ -38,7 +38,6 @@ HitObject.prototype.draw = function (ctx, ratioX, ratioY, currentTime) {
 HitObject.prototype._drawObject = function (ctx, ratioX, ratioY, currentTime) {
 	var alpha = (1 - (this.time - currentTime) / 1500);
 	var rgba = this.getColor(alpha);
-	var rgb = this.getColor();
 	var circleSize = this.beatmap.circleSize;
 
 	switch (this.type) {
