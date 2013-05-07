@@ -48,7 +48,7 @@ HitObject.prototype._drawObject = function (ctx, ratioX, ratioY, currentTime) {
 			ctx.lineWidth = 1;
 
 			ctx.beginPath();
-			ctx.fillStyle = "rgba(" + this.beatmap.circleBorder.join(",") + "," + alpha + ")";
+			ctx.fillStyle = 'rgba(' + this.beatmap.circleBorder.join(',') + ',' + alpha + ')';
 			ctx.arc(this.x * ratioX, this.y * ratioY, circleSize, 0, Math.PI * 2, 0);
 			ctx.fill();
 
@@ -57,11 +57,11 @@ HitObject.prototype._drawObject = function (ctx, ratioX, ratioY, currentTime) {
 			ctx.arc(this.x * ratioX, this.y * ratioY, circleSize * 0.9, 0, Math.PI * 2, 0);
 			ctx.fill();
 
-			ctx.textAlign = "center";
-			ctx.textBaseline = "middle";
+			ctx.textAlign = 'center';
+			ctx.textBaseline = 'middle';
 
-			ctx.font = circleSize + "px Arial";
-			ctx.fillStyle = "rgba(255,255,255," + alpha + ")";
+			ctx.font = circleSize + 'px Arial';
+			ctx.fillStyle = 'rgba(255,255,255,' + alpha + ')';
 
 			ctx.fillText(this.comboText, this.x * ratioX, this.y * ratioY);
 			break;
