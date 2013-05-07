@@ -13,6 +13,8 @@
 	this.audio = document.createElement('audio');
 	this.hitObjects = new Array(this.osu.HitObjects.length);
 	this.storyboard = new Storyboard(this.path, this.osu);
+
+	this.circleSize = 64 * (1 - 0.7 * ((this.osu.Difficulty.CircleSize - 5) / 5)) / 2;
 }
 
 Beatmap.prototype.init = function (cb) {

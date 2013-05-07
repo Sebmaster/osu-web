@@ -39,7 +39,7 @@ HitObject.prototype._drawObject = function (ctx, ratioX, ratioY, currentTime) {
 	var alpha = (1 - (this.time - currentTime) / 1500);
 	var rgba = this.getColor(alpha);
 	var rgb = this.getColor();
-	var circleSize = 20;
+	var circleSize = this.beatmap.circleSize;
 
 	switch (this.type) {
 		case 1:
@@ -54,7 +54,7 @@ HitObject.prototype._drawObject = function (ctx, ratioX, ratioY, currentTime) {
 
 			ctx.beginPath();
 			ctx.fillStyle = rgba;
-			ctx.arc(this.x * ratioX, this.y * ratioY, circleSize * 0.95, 0, Math.PI * 2, 0);
+			ctx.arc(this.x * ratioX, this.y * ratioY, circleSize * 0.9, 0, Math.PI * 2, 0);
 			ctx.fill();
 
 			ctx.textAlign = "center";
@@ -71,7 +71,7 @@ HitObject.prototype._drawObject = function (ctx, ratioX, ratioY, currentTime) {
 HitObject.prototype._drawApproach = function (ctx, ratioX, ratioY, currentTime) {
 	var alpha = (1 - (this.time - currentTime) / 1500);
 	var rgba = this.getColor(alpha);
-	var circleSize = 20;
+	var circleSize = this.beatmap.circleSize;
 
 	if (!this.clic) {
 		var taux = 1 - alpha;
