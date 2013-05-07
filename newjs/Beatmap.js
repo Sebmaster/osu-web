@@ -47,6 +47,8 @@ Beatmap.prototype.init = function (cb) {
 		this.hitObjects[i].comboText = comboText++;
 	}
 
+	this.storyboard.init(this.context);
+
 	Utils.getURLFromPath(that.path + that.osu.General.AudioFilename, function (err, url) {
 		if (err) {
 			cb(err);
