@@ -27,10 +27,13 @@ HitObject.prototype.draw = function (ctx, ratioX, ratioY, currentTime) {
 		case 1:
 		case 4:
 		case 5:
-			if (this.clicked === null && currentTime >= this.time - 1500 && currentTime <= this.time) {
+			if (this.clicked === null) {
 				this._drawObject(ctx, ratioX, ratioY, currentTime);
-				this._drawApproach(ctx, ratioX, ratioY, currentTime);
 			}
+			break;
+		case 2:
+		case 6:
+			this._drawSlider(ctx, ratioX, ratioY, currentTime);
 			break;
 	}
 };
@@ -38,33 +41,48 @@ HitObject.prototype.draw = function (ctx, ratioX, ratioY, currentTime) {
 HitObject.prototype._drawObject = function (ctx, ratioX, ratioY, currentTime) {
 	var alpha = (1 - (this.time - currentTime) / 1500);
 	var rgba = this.getColor(alpha);
+
+	if (currentTime >= this.time - 1500 && currentTime <= this.time) {
+		this._drawCircle(ctx, ratioX, ratioY, this.x, this.y, rgba, alpha);
+		this._drawApproach(ctx, ratioX, ratioY, currentTime);
+	}
+};
+
+HitObject.prototype._drawSlider = function (ctx, ratioX, ratioY, currentTime) {
+	var alpha = (1 - (this.time - currentTime) / 1500);
+	var rgba = this.getColor(alpha);
 	var circleSize = this.beatmap.circleSize;
 
-	switch (this.type) {
-		case 1:
-		case 4:
-		case 5:
-			ctx.lineWidth = 1;
-
-			ctx.beginPath();
-			ctx.fillStyle = 'rgba(' + this.beatmap.circleBorder.join(',') + ',' + alpha + ')';
-			ctx.arc(this.x * ratioX, this.y * ratioY, circleSize, 0, Math.PI * 2, 0);
-			ctx.fill();
-
-			ctx.beginPath();
-			ctx.fillStyle = rgba;
-			ctx.arc(this.x * ratioX, this.y * ratioY, circleSize * 0.9, 0, Math.PI * 2, 0);
-			ctx.fill();
-
-			ctx.textAlign = 'center';
-			ctx.textBaseline = 'middle';
-
-			ctx.font = circleSize + 'px Arial';
-			ctx.fillStyle = 'rgba(255,255,255,' + alpha + ')';
-
-			ctx.fillText(this.comboText, this.x * ratioX, this.y * ratioY);
-			break;
+	if (currentTime >= this.time - 1500 && currentTime <= this.time) {
+		//ctx.moveTo(this.x * ratioX, this.y * ratioY);
+		//ctx.bezierCurveTo();
+		this._drawCircle(ctx, ratioX, ratioY, this.x, this.y, rgba, alpha);
+		this._drawApproach(ctx, ratioX, ratioY, currentTime);
 	}
+};
+
+HitObject.prototype._drawCircle = function (ctx, ratioX, ratioY, x, y, color, alpha) {
+	var circleSize = this.beatmap.circleSize;
+
+	ctx.lineWidth = 1;
+
+	ctx.beginPath();
+	ctx.fillStyle = 'rgba(' + this.beatmap.circleBorder.join(',') + ',' + alpha + ')';
+	ctx.arc(x * ratioX, y * ratioY, circleSize, 0, Math.PI * 2, 0);
+	ctx.fill();
+
+	ctx.beginPath();
+	ctx.fillStyle = color;
+	ctx.arc(x * ratioX, y * ratioY, circleSize * 0.9, 0, Math.PI * 2, 0);
+	ctx.fill();
+
+	ctx.textAlign = 'center';
+	ctx.textBaseline = 'middle';
+
+	ctx.font = circleSize + 'px Arial';
+	ctx.fillStyle = 'rgba(255,255,255,' + alpha + ')';
+
+	ctx.fillText(this.comboText, x * ratioX, y * ratioY);
 };
 
 HitObject.prototype._drawApproach = function (ctx, ratioX, ratioY, currentTime) {
