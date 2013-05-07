@@ -48,7 +48,7 @@ HitObject.prototype._drawObject = function (ctx, ratioX, ratioY, currentTime) {
 			ctx.lineWidth = 1;
 
 			ctx.beginPath();
-			ctx.fillStyle = "rgba(200,200,200," + alpha + ")";
+			ctx.fillStyle = "rgba(255,255,255," + alpha + ")";
 			ctx.arc(this.x * ratioX, this.y * ratioY, circleSize, 0, Math.PI * 2, 0);
 			ctx.fill();
 
