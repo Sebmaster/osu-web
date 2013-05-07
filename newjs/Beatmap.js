@@ -8,17 +8,24 @@
 	this.storyboard = new Storyboard(this.path, this.osu);
 
 	this.color = [];
+	this.circleBorder = [255, 255, 255];
 	this.circleSize = 64 * (1 - 0.7 * ((this.osu.Difficulty.CircleSize - 5) / 5)) / 2;
 }
 
 Beatmap.prototype.init = function (cb) {
 	var that = this;
 
+	var cols;
+	if (this.osu.Colours.SliderBorder) {
+		cols = this.osu.Colours.SliderBorder.split(',');
+		this.circleBorder = [parseInt(cols[0], 10), parseInt(cols[1], 10), parseInt(cols[2], 10)];
+	}
+
 	for (var key in this.osu.Colours) {
 		var match = key.match(/^Combo(\d+)$/i);
 		if (!match) continue;
 
-		var cols = this.osu.Colours[key].split(',');
+		cols = this.osu.Colours[key].split(',');
 		this.color[parseInt(match[1], 10) - 1] = [parseInt(cols[0], 10), parseInt(cols[1], 10), parseInt(cols[2], 10)];
 	}
 
