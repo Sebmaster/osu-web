@@ -47,16 +47,14 @@ Beatmap.prototype.init = function (cb) {
 		this.hitObjects[i].comboText = comboText++;
 	}
 
-	Utils.requestFileSystem(0, function (err, fs) {
+	Utils.getURLFromPath(that.path + that.osu.General.AudioFilename, function (err, url) {
 		if (err) {
 			cb(err);
 			return;
 		}
 
-		fs.root.getFile(that.path + that.osu.General.AudioFilename, { exclusive: true }, function (fileEntry) {
-			that.audio.src = fileEntry.toURL();
-			cb(null);
-		}, cb);
+		that.audio.src = url;
+		cb(null);
 	});
 };
 
