@@ -52,5 +52,18 @@
 		}
 
 		readEntries();
+	},
+
+	getURLFromPath: function (path, cb) {
+		Utils.requestFileSystem(0, function (err, fs) {
+			if (err) {
+				cb(err);
+				return;
+			}
+
+			fs.root.getFile(path, { exclusive: true }, function (fileEntry) {
+				cb(null, fileEntry.toURL());
+			}, cb);
+		});
 	}
 };
