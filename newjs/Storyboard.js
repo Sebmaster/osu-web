@@ -32,6 +32,28 @@ Storyboard.prototype.init = function (ctx, cb) {
 						jQuery(ctx.canvas).parent().find('.' + klass).append('<img src="' + url + '">');
 					});
 					break;
+				case 'Video':
+					var match = event[2].match(/^"?(.*?)"?$/);
+					Utils.getURLFromPath(that.path + '/' + match[1], function (err, url) {
+						var klass;
+						switch (event[1]) {
+							case '0':
+								klass = 'background';
+								break;
+							case '1':
+								klass = 'fail';
+								break;
+							case '2':
+								klass = 'pass';
+								break;
+							case '3':
+								klass = 'foreground';
+								break;
+						}
+
+						jQuery(ctx.canvas).parent().find('.' + klass).append('<video src="' + url + '" autoplay loop>');
+					});
+					break;
 			}
 		})(this.osu.Events[i]);
 	}
