@@ -11,7 +11,7 @@
 	this.combo = 0;
 	this.comboText = 1;
 
-	this.clicked = false;
+	this.clicked = null;
 }
 
 HitObject.prototype.getColor = function (alpha) {
@@ -27,7 +27,7 @@ HitObject.prototype.draw = function (ctx, ratioX, ratioY, currentTime) {
 		case 1:
 		case 4:
 		case 5:
-			if (!this.clicked && currentTime >= this.time - 1500 && currentTime <= this.time) {
+			if (this.clicked === null && currentTime >= this.time - 1500 && currentTime <= this.time) {
 				this._drawObject(ctx, ratioX, ratioY, currentTime);
 				this._drawApproach(ctx, ratioX, ratioY, currentTime);
 			}
