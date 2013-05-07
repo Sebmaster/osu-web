@@ -1,10 +1,5 @@
 ﻿function Beatmap(ctx, osuFile, path) {
-	this.color = [
-		[255, 165, 0],
-		[0, 255, 0],
-		[0, 0, 255],
-		[255, 0, 0]
-	];
+	this.color = [];
 
 	this.context = ctx;
 	this.animationFrame = null;
@@ -20,16 +15,27 @@
 Beatmap.prototype.init = function (cb) {
 	var that = this;
 
-	var i = 0;
 	for (var key in this.osu.Colours) {
+		var match = key.match(/^Combo(\d+)$/i);
+		if (!match) continue;
+
 		var cols = this.osu.Colours[key].split(',');
-		this.color[i++] = [parseInt(cols[0], 10), parseInt(cols[1], 10), parseInt(cols[2], 10)];
+		this.color[parseInt(match[1], 10) - 1] = [parseInt(cols[0], 10), parseInt(cols[1], 10), parseInt(cols[2], 10)];
+	}
+
+	if (this.color.length === 0) {
+		this.color = [
+			[255, 165, 0],
+			[0, 255, 0],
+			[0, 0, 255],
+			[255, 0, 0]
+		];
 	}
 
 	var ho = this.osu.HitObjects;
 	var combo = 0;
 	var comboText = 1;
-	for (i = 0; i < ho.length; ++i) {
+	for (var i = 0; i < ho.length; ++i) {
 		this.hitObjects[i] = new HitObject(this, ho[i]);
 		if (this.hitObjects[i].type === 4 || this.hitObjects[i].type === 5 || this.hitObjects[i].type === 6) {
 			if (i !== 0) {
