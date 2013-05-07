@@ -1,6 +1,4 @@
 ﻿function OSUFile(src) {
-	this.data = {};
-
 	this._parse(src);
 }
 
@@ -18,19 +16,19 @@ OSUFile.prototype._parse = function (src) {
 		if (categoryMatch) {
 			category = categoryMatch[1];
 			if (category === 'Events' || category === 'TimingPoints' || category === 'HitObjects') {
-				this.data[category] = [];
+				this[category] = [];
 			} else {
-				this.data[category] = {};
+				this[category] = {};
 			}
 		} else if (category === 'Events' || category === 'TimingPoints' || category === 'HitObjects') {
 			if (category === 'Events' && (lines[i][0] === '_' || lines[i][0] === ' ')) {
-				this.data[category][this.data[category].length - 1] += ',' + lines[i].substr(1);
+				this[category][this.data[category].length - 1] += ',' + lines[i].substr(1);
 			} else {
-				this.data[category].push(lines[i].split(','));
+				this[category].push(lines[i].split(','));
 			}
 		} else {
 			var lineMatch = lines[i].match(/^(\S*?)\s*:\s*(.*)$/);
-			this.data[category][lineMatch[1]] = lineMatch[2];
+			this[category][lineMatch[1]] = lineMatch[2];
 		}
 	}
 };

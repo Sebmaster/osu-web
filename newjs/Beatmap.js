@@ -11,7 +11,7 @@
 	this.osu = osuFile;
 	this.path = path;
 	this.audio = document.createElement('audio');
-	this.hitObjects = new Array(this.osu.data.HitObjects.length);
+	this.hitObjects = new Array(this.osu.HitObjects.length);
 	this.storyboard = new Storyboard(this.path, this.osu);
 }
 
@@ -19,12 +19,12 @@ Beatmap.prototype.init = function (cb) {
 	var that = this;
 
 	var i = 0;
-	for (var key in this.osu.data.Colours) {
-		var cols = this.osu.data.Colours[key].split(',');
+	for (var key in this.osu.Colours) {
+		var cols = this.osu.Colours[key].split(',');
 		this.color[i++] = [parseInt(cols[0], 10), parseInt(cols[1], 10), parseInt(cols[2], 10)];
 	}
 
-	var ho = this.osu.data.HitObjects;
+	var ho = this.osu.HitObjects;
 	var combo = 0;
 	var comboText = 1;
 	for (i = 0; i < ho.length; ++i) {
@@ -51,7 +51,7 @@ Beatmap.prototype.init = function (cb) {
 			return;
 		}
 
-		fs.root.getFile(that.path + that.osu.data.General.AudioFilename, { exclusive: true }, function (fileEntry) {
+		fs.root.getFile(that.path + that.osu.General.AudioFilename, { exclusive: true }, function (fileEntry) {
 			that.audio.src = fileEntry.toURL();
 			cb(null);
 		}, cb);
