@@ -2,6 +2,58 @@
 	this.file = file;
 }
 
+OSZFile.MimeTypes = {
+	'aif': 'audio/x-aiff',
+	'aifc': 'audio/x-aiff',
+	'aiff': 'audio/x-aiff',
+	'asf': 'video/x-ms-asf',
+	'asr': 'video/x-ms-asf',
+	'asx': 'video/x-ms-asf',
+	'avi': 'video/x-msvideo',
+	'bmp': 'image/bmp',
+	'css': 'text/css',
+	'gif': 'image/gif',
+	'htm': 'text/html',
+	'html': 'text/html',
+	'ico': 'image/x-icon',
+	'jfif': 'image/pipeg',
+	'jpe': 'image/jpeg',
+	'jpeg': 'image/jpeg',
+	'jpg': 'image/jpeg',
+	'js': 'application/x-javascript',
+	'm13': 'application/x-msmediaview',
+	'm14': 'application/x-msmediaview',
+	'm3u': 'audio/x-mpegurl',
+	'mid': 'audio/mid',
+	'mov': 'video/quicktime',
+	'mp2': 'video/mpeg',
+	'mp3': 'audio/mpeg',
+	'mpa': 'video/mpeg',
+	'mpe': 'video/mpeg',
+	'mpeg': 'video/mpeg',
+	'mpg': 'video/mpeg',
+	'mpv2': 'video/mpeg',
+	'pbm': 'image/x-portable-bitmap',
+	'pdf': 'application/pdf',
+	'qt': 'video/quicktime',
+	'ra': 'audio/x-pn-realaudio',
+	'ram': 'audio/x-pn-realaudio',
+	'rmi': 'audio/mid',
+	'rtf': 'application/rtf',
+	'svg': 'image/svg+xml',
+	'swf': 'application/x-shockwave-flash',
+	'tif': 'image/tiff',
+	'tiff': 'image/tiff',
+	'tsv': 'text/tab-separated-values',
+	'txt': 'text/plain',
+	'wav': 'audio/x-wav',
+	'wmf': 'application/x-msmetafile',
+	'wrl': 'x-world/x-vrml',
+	'wrz': 'x-world/x-vrml',
+	'xaf': 'x-world/x-vrml',
+	'xbm': 'image/x-xbitmap'
+};
+
 OSZFile.prototype.verify = function (cb) {
 	if (this.file.name.substr(this.file.name.length - 4) !== '.osz') {
 		cb(new Error('Invalid file extension'));
@@ -65,7 +117,10 @@ OSZFile.prototype.copyToLocalStorage = function (cb) {
 							return;
 						}
 
-						entries[doneEntries].getData(new zip.BlobWriter(), function (blob) {
+						var ext = entries[doneEntries].filename.split('.');
+						ext = ext[ext.length - 1];
+
+						entries[doneEntries].getData(new zip.BlobWriter(OSZFile.MimeTypes[ext]), function (blob) {
 							var parts = ('Songs/' + that.file.name.substr(0, that.file.name.length - 4) + '/' + entries[doneEntries].filename).split('/');
 							var path = parts.slice(0, -1);
 
