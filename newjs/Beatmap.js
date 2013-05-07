@@ -17,18 +17,15 @@
 Beatmap.prototype.init = function (cb) {
 	var that = this;
 
-	var cols;
 	if (this.osu.Colours.SliderBorder) {
-		cols = this.osu.Colours.SliderBorder.split(',');
-		this.circleBorder = [parseInt(cols[0], 10), parseInt(cols[1], 10), parseInt(cols[2], 10)];
+		this.circleBorder = this.osu.Colours.SliderBorder;
 	}
 
 	for (var key in this.osu.Colours) {
 		var match = key.match(/^Combo(\d+)$/i);
 		if (!match) continue;
 
-		cols = this.osu.Colours[key].split(',');
-		this.color[parseInt(match[1], 10) - 1] = [parseInt(cols[0], 10), parseInt(cols[1], 10), parseInt(cols[2], 10)];
+		this.color[parseInt(match[1], 10) - 1] = this.osu.Colours[key];
 	}
 
 	if (this.color.length === 0) {

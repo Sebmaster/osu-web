@@ -36,4 +36,10 @@ OSUFile.prototype._parse = function (src) {
 
 OSUFile.prototype._normalize = function () {
 	this.General.AudioLeadIn = parseInt(this.General.AudioLeadIn, 10) || 0;
+	this.Difficulty.CircleSize = parseInt(this.Difficulty.CircleSize, 10) || 7;
+
+	for (var key in this.Colours) {
+		var cols = this.Colours[key].split(',');
+		this.Colours[key] = [parseInt(cols[0], 10), parseInt(cols[1], 10), parseInt(cols[2], 10)];
+	}
 };
