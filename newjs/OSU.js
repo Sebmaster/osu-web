@@ -1,6 +1,6 @@
 ﻿function OSU(playArea, songArea) {
 	this.playArea = jQuery(playArea);
-	this.context = jQuery('<canvas>').css({ width: '100%', height: '100%' }).appendTo(this.playArea)[0].getContext('2d');
+	this.context = this.playArea.find('canvas')[0].getContext('2d');
 }
 
 OSU.prototype.bindEvents = function (newSong) {

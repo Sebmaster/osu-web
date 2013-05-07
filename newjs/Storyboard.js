@@ -8,18 +8,32 @@ Storyboard.prototype.init = function (ctx, cb) {
 	var that = this;
 
 	for (var i = 0; i < this.osu.Events.length; ++i) {
-		switch (this.osu.Events[i][0]) {
-			case "0":
-				var match = that.osu.Events[i][2].match(/^"?(.*?)"?$/);
-				Utils.getURLFromPath(that.path + '/' + match[1], function (err, url) {
-					jQuery(ctx.canvas).css({
-						background: 'url("'+url+'")',
-						backgroundPosition: 'center center',
-						backgroundSize: 'cover'
+		(function (event) {
+			switch (event[0]) {
+				case '0':
+					var match = event[2].match(/^"?(.*?)"?$/);
+					Utils.getURLFromPath(that.path + '/' + match[1], function (err, url) {
+						var klass;
+						switch (event[1]) {
+							case '0':
+								klass = 'background';
+								break;
+							case '1':
+								klass = 'fail';
+								break;
+							case '2':
+								klass = 'pass';
+								break;
+							case '3':
+								klass = 'foreground';
+								break;
+						}
+
+						jQuery(ctx.canvas).parent().find('.' + klass).append('<img src="' + url + '">');
 					});
-				});
-				break;
-		}
+					break;
+			}
+		})(this.osu.Events[i]);
 	}
 
 	this._initOsb(cb);
