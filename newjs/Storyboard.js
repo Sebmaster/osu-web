@@ -14,7 +14,8 @@ Storyboard.prototype.init = function (ctx, cb) {
 				Utils.getURLFromPath(that.path + '/' + match[1], function (err, url) {
 					jQuery(ctx.canvas).css({
 						background: 'url("'+url+'")',
-						backgroundSize: '100% 100%'
+						backgroundPosition: 'center center',
+						backgroundSize: 'cover'
 					});
 				});
 				break;
