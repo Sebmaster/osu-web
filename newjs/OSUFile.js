@@ -1,5 +1,6 @@
 ﻿function OSUFile(src) {
 	this._parse(src);
+	this._normalize();
 }
 
 OSUFile.prototype._parse = function (src) {
@@ -31,4 +32,8 @@ OSUFile.prototype._parse = function (src) {
 			this[category][lineMatch[1]] = lineMatch[2];
 		}
 	}
+};
+
+OSUFile.prototype._normalize = function () {
+	this.General.AudioLeadIn = parseInt(this.General.AudioLeadIn, 10) || 0;
 };

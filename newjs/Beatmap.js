@@ -7,6 +7,8 @@
 	this.hitObjects = new Array(this.osu.HitObjects.length);
 	this.storyboard = new Storyboard(this.path, this.osu);
 
+	this.startTime = null;
+
 	this.color = [];
 	this.circleBorder = [255, 255, 255];
 	this.circleSize = 64 * (1 - 0.7 * ((this.osu.Difficulty.CircleSize - 5) / 5)) / 2;
@@ -73,7 +75,12 @@ Beatmap.prototype.init = function (cb) {
 };
 
 Beatmap.prototype.start = function () {
-	this.audio.play();
+	var that = this;
+	setTimeout(function () {
+		that.audio.play()
+	}, this.osu.General.AudioLeadIn);
+
+	this.startTime = Date.now();
 	this.animationFrame = window.requestAnimationFrame(this.draw.bind(this));
 };
 
@@ -84,7 +91,14 @@ Beatmap.prototype.draw = function () {
 	var height = this.context.canvas.height;
 	var ratioX = width / 640;
 	var ratioY = height / 480;
-	var curr = this.audio.currentTime * 1000;
+
+	var diff = Date.now() - this.startTime;
+	var curr;
+	if (diff > this.osu.General.AudioLeadIn) {
+		curr = this.audio.currentTime * 1000;
+	} else {
+		curr = diff - this.osu.General.AudioLeadIn;
+	}
 
 	this.context.clearRect(0, 0, width, height);
 	this.storyboard.draw(this.context, ratioX, ratioY, curr);
