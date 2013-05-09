@@ -122,7 +122,7 @@ HitObject.prototype._drawSlide = function (ctx, ratioX, ratioY, currentTime) {
 
 	ctx.lineJoin = 'round';
 	ctx.lineCap = 'round';
-	ctx.lineWidth = this.beatmap.circleSize;
+	ctx.lineWidth = this.beatmap.circleSize * 2;
 
 	ctx.beginPath();
 	ctx.strokeStyle = 'rgba(' + this.beatmap.circleBorder.join(',') + ',' + alpha + ')';
@@ -138,7 +138,7 @@ HitObject.prototype._drawSlide = function (ctx, ratioX, ratioY, currentTime) {
 	}
 	ctx.stroke();
 
-	ctx.lineWidth = this.beatmap.circleSize * 0.95;
+	ctx.lineWidth = this.beatmap.circleSize * 2 * 0.95;
 
 	ctx.beginPath();
 	ctx.strokeStyle = rgba;
