@@ -1,6 +1,8 @@
 ﻿function HitObject(beatmap, data) {
 	this.beatmap = beatmap;
 
+	this.data = data;
+
 	this.x = parseInt(data[0], 10);
 	this.y = parseInt(data[1], 10);
 
@@ -12,7 +14,20 @@
 	this.comboText = 1;
 
 	this.clicked = null;
+
+	if (this.type === 2 || this.type === 6) {
+		this._initSlider();
+	}
 }
+
+HitObject.prototype._initSlider = function () {
+	this.curvePoints = this.data[5].split('|');
+	this.sliderType = this.curvePoints.shift();
+
+	for (var i = 0; i < this.curvePoints.length; ++i) {
+		this.curvePoints[i] = this.curvePoints[i].split(':');
+	}
+};
 
 HitObject.prototype.getColor = function (alpha) {
 	if (typeof alpha !== 'number') {
@@ -54,8 +69,7 @@ HitObject.prototype._drawSlider = function (ctx, ratioX, ratioY, currentTime) {
 	var circleSize = this.beatmap.circleSize;
 
 	if (currentTime >= this.time - 1500 && currentTime <= this.time) {
-		//ctx.moveTo(this.x * ratioX, this.y * ratioY);
-		//ctx.bezierCurveTo();
+		this._drawSlide(ctx, ratioX, ratioY, currentTime);
 		this._drawCircle(ctx, ratioX, ratioY, this.x, this.y, rgba, alpha);
 		this._drawApproach(ctx, ratioX, ratioY, currentTime);
 	}
@@ -100,4 +114,46 @@ HitObject.prototype._drawApproach = function (ctx, ratioX, ratioY, currentTime) 
 		ctx.arc(this.x * ratioX, this.y * ratioY, (1 + 3 * taux) * circleSize, 0, Math.PI * 2, 0);
 		ctx.stroke();
 	}
+};
+
+HitObject.prototype._drawSlide = function (ctx, ratioX, ratioY, currentTime) {
+	var alpha = (1 - (this.time - currentTime) / 1500);
+	var rgba = this.getColor(alpha);
+
+	ctx.lineJoin = 'round';
+	ctx.lineCap = 'round';
+	ctx.lineWidth = this.beatmap.circleSize;
+
+	ctx.beginPath();
+	ctx.strokeStyle = 'rgba(' + this.beatmap.circleBorder.join(',') + ',' + alpha + ')';
+	ctx.moveTo(ratioX * this.x, ratioY * this.y);
+	if (this.sliderType === 'B' && this.curvePoints.length === 3) {
+		ctx.bezierCurveTo(ratioX * this.curvePoints[0][0], this.curvePoints[0][1], ratioX * this.curvePoints[1][0], ratioY * this.curvePoints[1][1], ratioX * this.curvePoints[2][0], ratioY * this.curvePoints[2][1]);
+	} else if (this.sliderType === 'B' && this.curvePoints.length === 2) {
+		ctx.quadraticCurveTo(ratioX * this.curvePoints[0][0], ratioY * this.curvePoints[0][1], ratioX * this.curvePoints[1][0], ratioY * this.curvePoints[1][1]);
+	} else {
+		for (var i = 0; i < this.curvePoints.length; ++i) {
+			ctx.lineTo(ratioX * this.curvePoints[i][0], ratioY * this.curvePoints[i][1]);
+		}
+	}
+	ctx.stroke();
+
+	ctx.lineWidth = this.beatmap.circleSize * 0.95;
+
+	ctx.beginPath();
+	ctx.strokeStyle = rgba;
+	ctx.moveTo(ratioX * this.x, ratioY * this.y);
+	if (this.sliderType === 'B' && this.curvePoints.length === 3) {
+		ctx.bezierCurveTo(ratioX * this.curvePoints[0][0], ratioY * this.curvePoints[0][1], ratioX * this.curvePoints[1][0], ratioY * this.curvePoints[1][1], ratioX * this.curvePoints[2][0], ratioY * this.curvePoints[2][1]);
+	} else if (this.sliderType === 'B' && this.curvePoints.length === 2) {
+		ctx.quadraticCurveTo(ratioX * this.curvePoints[0][0], ratioY * this.curvePoints[0][1], ratioX * this.curvePoints[1][0], ratioY * this.curvePoints[1][1]);
+	} else {
+		for (var i = 0; i < this.curvePoints.length; ++i) {
+			ctx.lineTo(ratioX * this.curvePoints[i][0], ratioY * this.curvePoints[i][1]);
+		}
+	}
+	ctx.stroke();
+
+	ctx.lineJoin = 'miter';
+	ctx.lineCap = 'butt';
 };
