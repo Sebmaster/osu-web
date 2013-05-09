@@ -128,7 +128,7 @@ HitObject.prototype._drawSlide = function (ctx, ratioX, ratioY, currentTime) {
 	ctx.strokeStyle = 'rgba(' + this.beatmap.circleBorder.join(',') + ',' + alpha + ')';
 	ctx.moveTo(ratioX * this.x, ratioY * this.y);
 	if (this.sliderType === 'B' && this.curvePoints.length === 3) {
-		ctx.bezierCurveTo(ratioX * this.curvePoints[0][0], this.curvePoints[0][1], ratioX * this.curvePoints[1][0], ratioY * this.curvePoints[1][1], ratioX * this.curvePoints[2][0], ratioY * this.curvePoints[2][1]);
+		ctx.bezierCurveTo(ratioX * this.curvePoints[0][0], ratioY * this.curvePoints[0][1], ratioX * this.curvePoints[1][0], ratioY * this.curvePoints[1][1], ratioX * this.curvePoints[2][0], ratioY * this.curvePoints[2][1]);
 	} else if (this.sliderType === 'B' && this.curvePoints.length === 2) {
 		ctx.quadraticCurveTo(ratioX * this.curvePoints[0][0], ratioY * this.curvePoints[0][1], ratioX * this.curvePoints[1][0], ratioY * this.curvePoints[1][1]);
 	} else {
