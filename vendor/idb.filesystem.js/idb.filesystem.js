@@ -54,8 +54,10 @@
 		this.name = obj.name;
 
 		// Required for FF 11.
-		this.__defineSetter__('code', function (code) {
-			code_ = code;
+		Object.defineProperty(this, 'code', {
+			set: function (code) {
+				code_ = code;
+			}
 		});
 	}
 	MyFileError.prototype = FileError.prototype;
@@ -165,18 +167,19 @@
 		this.type = opts.type || '';
 		//this.slice = Blob.prototype.slice; // Doesn't work with structured clones.
 
-		this.__defineGetter__('blob_', function () {
-			return blob_;
-		});
-
 		// Need some black magic to correct the object's size/name/type based on the
 		// blob that is saved.
-		this.__defineSetter__('blob_', function (val) {
-			blob_ = val;
-			this.size = blob_.size;
-			this.name = blob_.name;
-			this.type = blob_.type;
-		}.bind(this));
+		Object.defineProperty(this, 'blob_', {
+			get: function () {
+				return blob_;
+			},
+			set: function (val) {
+				blob_ = val;
+				this.size = blob_.size;
+				this.name = blob_.name;
+				this.type = blob_.type;
+			}.bind(this)
+		});
 	}
 	MyFile.prototype.constructor = MyFile;
 	//MyFile.prototype.slice = Blob.prototype.slice;
@@ -198,12 +201,16 @@
 		var position_ = 0;
 		var blob_ = fileEntry.file_ ? fileEntry.file_.blob_ : null;
 
-		this.__defineGetter__('position', function () {
-			return position_;
+		Object.defineProperty(this, 'position', {
+			get: function () {
+				return position_;
+			}
 		});
 
-		this.__defineGetter__('length', function () {
-			return blob_ ? blob_.size : 0;
+		Object.defineProperty(this, 'length', {
+			get: function () {
+				return blob_ ? blob_.size : 0;
+			}
 		});
 
 		this.seek = function (offset) {
@@ -352,13 +359,9 @@
 			}, opt_errorCallback);
 		},
 		toURL: function () {
-			if (this.isFile && this.file_.blob_) {
-				var blob = this.file_.blob_;
-			} else {
-				var blob = new Blob([]);
-			}
-			
-			return window.URL.createObjectURL(blob);
+			var origin = location.protocol + '//' + location.host;
+			return 'filesystem:' + origin + DIR_SEPARATOR + storageType_.toLowerCase() +
+				   this.fullPath;
 		},
 	};
 
@@ -376,20 +379,16 @@
 	function FileEntry(opt_fileEntry) {
 		var file_ = null;
 
-		this.__defineGetter__('file_', function () {
-			return file_;
-		});
+		this.isFile = true;
+		this.isDirectory = false;
 
-		this.__defineSetter__('file_', function (val) {
-			file_ = val;
-		});
-
-		this.__defineGetter__('isFile', function () {
-			return true;
-		});
-
-		this.__defineGetter__('isDirectory', function () {
-			return false;
+		Object.defineProperty(this, 'file_', {
+			get: function () {
+				return file_;
+			},
+			set: function (val) {
+				file_ = val;
+			}
 		});
 
 		// Create this entry from properties from an existing FileEntry.
@@ -445,13 +444,8 @@
 	 * @extends {Entry}
 	 */
 	function DirectoryEntry(opt_folderEntry) {
-		this.__defineGetter__('isFile', function () {
-			return false;
-		});
-
-		this.__defineGetter__('isDirectory', function () {
-			return true;
-		});
+		this.isFile = false;
+		this.isDirectory = true;
 
 		// Create this entry from properties from an existing DirectoryEntry.
 		if (opt_folderEntry) {
