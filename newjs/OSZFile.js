@@ -33,6 +33,7 @@ OSZFile.MimeTypes = {
 	'mpeg': 'video/mpeg',
 	'mpg': 'video/mpeg',
 	'mpv2': 'video/mpeg',
+	'osu': 'text/x-osu',
 	'pbm': 'image/x-portable-bitmap',
 	'pdf': 'application/pdf',
 	'qt': 'video/quicktime',
@@ -120,7 +121,7 @@ OSZFile.prototype.copyToLocalStorage = function (cb) {
 						var ext = entries[doneEntries].filename.split('.');
 						ext = ext[ext.length - 1];
 
-						entries[doneEntries].getData(new zip.BlobWriter(OSZFile.MimeTypes[ext]), function (blob) {
+						entries[doneEntries].getData(new zip.BlobWriter(OSZFile.MimeTypes[ext] ? OSZFile.MimeTypes[ext] : 'application/octet-stream'), function (blob) {
 							var parts = ('Songs/' + that.file.name.substr(0, that.file.name.length - 4) + '/' + entries[doneEntries].filename).split('/');
 							var path = parts.slice(0, -1);
 
