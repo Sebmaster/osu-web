@@ -62,7 +62,12 @@
 			}
 
 			fs.root.getFile(path, { exclusive: true }, function (fileEntry) {
-				cb(null, fileEntry.toURL());
+				if (fileEntry.isFile && fileEntry.file_.blob_) {
+					var blob = fileEntry.file_.blob_;
+					cb(null, window.URL.createObjectURL(blob));
+				} else {
+					cb(null, fileEntry.toURL());
+				}
 			}, cb);
 		});
 	}
