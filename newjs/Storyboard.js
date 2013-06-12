@@ -70,7 +70,7 @@ Storyboard.prototype._initOsb = function (cb) {
 			return;
 		}
 
-		fs.root.getDirectory(that.path, function (dirEntry) {
+		fs.root.getDirectory(that.path, {}, function (dirEntry) {
 			Utils.readDirectoryEntries(dirEntry, function (err, entries) {
 				if (err) {
 					cb(err);
