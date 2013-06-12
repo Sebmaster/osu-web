@@ -22,7 +22,7 @@
  * "/one/two/" comes before "/one/two/ANYTHING" comes before "/one/two/0".
  *
  * @author Eric Bidelman (ebidel@gmail.com)
- * @version: 0.0.3
+ * @version: 0.0.4
  */
 
 'use strict';
@@ -51,12 +51,24 @@ FileError.NOT_FOUND_ERR  = 1;
 
 function MyFileError(obj) {
   var code_ = obj.code;
-  this.name = obj.name;
+  var name_ = obj.name;
 
-  // Required for FF 11.
+    // Required for FF 11.
   Object.defineProperty(this, 'code', {
     set: function (code) {
       code_ = code;
+    },
+    get: function() {
+      return code_;
+    }
+  });
+
+  Object.defineProperty(this, 'name', {
+    set: function (name) {
+      name_ = name;
+    },
+    get: function() {
+      return name_;
     }
   });
 }
@@ -160,12 +172,14 @@ function MyFile(opts) {
   this.size = opts.size || 0;
   this.name = opts.name || '';
   this.type = opts.type || '';
+  this.lastModifiedDate = opts.lastModifiedDate || null;
   //this.slice = Blob.prototype.slice; // Doesn't work with structured clones.
 
   // Need some black magic to correct the object's size/name/type based on the
   // blob that is saved.
   Object.defineProperty(this, 'blob_', {
-    get: function () {
+    enumerable: true,
+    get: function() {
       return blob_;
     },
     set: function (val) {
@@ -197,13 +211,13 @@ function FileWriter(fileEntry) {
   var blob_ = fileEntry.file_ ? fileEntry.file_.blob_ : null;
 
   Object.defineProperty(this, 'position', {
-    get: function () {
+    get: function() {
       return position_;
     }
   });
 
   Object.defineProperty(this, 'length', {
-    get: function () {
+    get: function() {
       return blob_ ? blob_.size : 0;
     }
   });
@@ -223,11 +237,15 @@ function FileWriter(fileEntry) {
   };
 
   this.truncate = function(size) {
-    if (size < this.length) {
-      blob_ = blob_.slice(0, size);
-    } else {
-      blob_ = new Blob([blob_, new Uint8Array(size - this.length)],
+    if (blob_) {
+      if (size < this.length) {
+        blob_ = blob_.slice(0, size);
+      } else {
+        blob_ = new Blob([blob_, new Uint8Array(size - this.length)],
                        {type: blob_.type});
+      }
+    } else {
+      blob_ = new Blob([]);
     }
 
     position_ = 0; // truncate from beginning of file.
@@ -269,6 +287,8 @@ function FileWriter(fileEntry) {
 
     // Set the blob we're writing on this file entry so we can recall it later.
     fileEntry.file_.blob_ = blob_;
+    //fileEntry.file_.blob_.lastModifiedDate = data.lastModifiedDate || null;
+    fileEntry.file_.lastModifiedDate = data.lastModifiedDate || null;
 
     idb_.put(fileEntry, function(entry) {
       // Add size of data written to writer.position.
@@ -317,6 +337,28 @@ function DirectoryReader(dirEntry) {
 };
 
 /**
+ * Interface supplies information about the state of a file or directory. 
+ *
+ * Modeled from:
+ * dev.w3.org/2009/dap/file-system/file-dir-sys.html#idl-def-Metadata
+ *
+ * @constructor
+ */
+function Metadata(modificationTime, size) {
+  this.modificationTime_ = modificationTime || null;
+  this.size_ = size || 0;
+}
+
+Metadata.prototype = {
+  get modificationTime() {
+    return this.modificationTime_;
+  },
+  get size() {
+    return this.size_;
+  }
+}
+
+/**
  * Interface representing entries in a filesystem, each of which may be a File
  * or DirectoryEntry.
  *
@@ -334,8 +376,22 @@ Entry.prototype = {
   copyTo: function() {
     throw NOT_IMPLEMENTED_ERR;
   },
-  getMetadata: function() {
-    throw NOT_IMPLEMENTED_ERR;
+  getMetadata: function(successCallback, opt_errorCallback) {
+    if (!successCallback) {
+      throw Error('Expected successCallback argument.');
+    }
+
+    try {
+      if (this.isFile) {
+        successCallback(
+            new Metadata(this.file_.lastModifiedDate, this.file_.size));
+      } else {
+        opt_errorCallback(new MyFileError({code: 1001,
+            name: 'getMetadata() not implemented for DirectoryEntry'}));
+      }
+    } catch(e) {
+      opt_errorCallback && opt_errorCallback(e);
+    }
   },
   getParent: function() {
     throw NOT_IMPLEMENTED_ERR;
@@ -349,7 +405,7 @@ Entry.prototype = {
     }
     // TODO: This doesn't protect against directories that have content in it.
     // Should throw an error instead if the dirEntry is not empty.
-    idb_.delete(this.fullPath, function() {
+    idb_['delete'](this.fullPath, function() {
       successCallback();
     }, opt_errorCallback);
   },
@@ -374,8 +430,18 @@ Entry.prototype = {
 function FileEntry(opt_fileEntry) {
   this.file_ = null;
 
-  this.isFile = true;
-  this.isDirectory = false;
+  Object.defineProperty(this, 'isFile', {
+    enumerable: true,
+    get: function() {
+      return true;
+    }
+  });
+  Object.defineProperty(this, 'isDirectory', {
+    enumerable: true,
+    get: function() {
+      return false;
+    }
+  });
 
   // Create this entry from properties from an existing FileEntry.
   if (opt_fileEntry) {
@@ -410,6 +476,7 @@ FileEntry.prototype.file = function(successCallback, opt_errorCallback) {
   // If we're returning a zero-length (empty) file, return the fake file obj.
   // Otherwise, return the native File object that we've stashed.
   var file = this.file_.blob_ == null ? this.file_ : this.file_.blob_;
+  file.lastModifiedDate = this.file_.lastModifiedDate;
 
   // Add Blob.slice() to this wrapped object. Currently won't work :(
   /*if (!val.slice) {
@@ -430,8 +497,18 @@ FileEntry.prototype.file = function(successCallback, opt_errorCallback) {
  * @extends {Entry}
  */
 function DirectoryEntry(opt_folderEntry) {
-  this.isFile = false;
-  this.isDirectory = true;
+  Object.defineProperty(this, 'isFile', {
+    enumerable: true,
+    get: function() {
+      return false;
+    }
+  });
+  Object.defineProperty(this, 'isDirectory', {
+    enumerable: true,
+    get: function() {
+      return true;
+    }
+  });
 
   // Create this entry from properties from an existing DirectoryEntry.
   if (opt_folderEntry) {
@@ -452,6 +529,10 @@ DirectoryEntry.prototype.getDirectory = function(path, options, successCallback,
   path = resolveToFullPath_(this.fullPath, path);
 
   idb_.get(path, function(folderEntry) {
+    if (!options) {
+      options = {};
+    }
+
     if (options.create === true && options.exclusive === true && folderEntry) {
       // If create and exclusive are both true, and the path already exists,
       // getDirectory must fail.
@@ -521,6 +602,10 @@ DirectoryEntry.prototype.getFile = function(path, options, successCallback,
   path = resolveToFullPath_(this.fullPath, path);
 
   idb_.get(path, function(fileEntry) {
+    if (!options) {
+      options = {};
+    }
+
     if (options.create === true && options.exclusive === true && fileEntry) {
       // If create and exclusive are both true, and the path already exists,
       // getFile must fail.
@@ -537,7 +622,8 @@ DirectoryEntry.prototype.getFile = function(path, options, successCallback,
       fileEntry.name = path.split(DIR_SEPARATOR).pop(); // Just need filename.
       fileEntry.fullPath = path;
       fileEntry.filesystem = fs_;
-      fileEntry.file_ = new MyFile({size: 0, name: fileEntry.name});
+      fileEntry.file_ = new MyFile({size: 0, name: fileEntry.name,
+                                    lastModifiedDate: new Date()});
 
       idb_.put(fileEntry, successCallback, opt_errorCallback);
 
@@ -752,12 +838,12 @@ idb_.getAllEntries = function(fullPath, successCallback, opt_errorCallback) {
       var val = cursor.value;
 
       results.push(val.isFile ? new FileEntry(val) : new DirectoryEntry(val));
-      cursor.continue();
+      cursor['continue']();
     }
   };
 };
 
-idb_.delete = function(fullPath, successCallback, opt_errorCallback) {
+idb_['delete'] = function(fullPath, successCallback, opt_errorCallback) {
   if (!this.db) {
     return;
   }
@@ -769,7 +855,7 @@ idb_.delete = function(fullPath, successCallback, opt_errorCallback) {
   //var request = tx.objectStore(FILE_STORE_).delete(fullPath);
   var range = IDBKeyRange.bound(
       fullPath, fullPath + DIR_OPEN_BOUND, false, true);
-  var request = tx.objectStore(FILE_STORE_).delete(range);
+  var request = tx.objectStore(FILE_STORE_)['delete'](range);
 };
 
 idb_.put = function(entry, successCallback, opt_errorCallback) {
@@ -817,6 +903,7 @@ if (exports === window && exports.RUNNING_TESTS) {
   exports['FileEntry'] = FileEntry;
   exports['DirectoryEntry'] = DirectoryEntry;
   exports['resolveToFullPath_'] = resolveToFullPath_;
+  exports['Metadata'] = Metadata;
 }
 
 })(self); // Don't use window because we want to run in workers.
