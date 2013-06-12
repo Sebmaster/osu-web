@@ -79,7 +79,7 @@ Storyboard.prototype._initOsb = function (cb) {
 
 				var found = false;
 				for (var i = 0; i < entries.length; ++i) {
-					if (entries.name.substring(-4) === '.osb') {
+					if (entries[i].name.substring(-4) === '.osb') {
 						entries[i].file(function (file) {
 							var reader = new FileReader();
 
@@ -98,7 +98,7 @@ Storyboard.prototype._initOsb = function (cb) {
 					}
 				}
 
-				if (!found) { // no osb found - don't need to load it
+				if (!found && cb) { // no osb found - don't need to load it
 					cb(null);
 				}
 			});
